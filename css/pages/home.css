@@ -1252,6 +1252,8 @@
     0 54px 0 -22px rgba(27, 38, 49, 0.38),
     0 70px 90px rgba(0, 0, 0, 0.16);
   transition: opacity 180ms ease, transform 180ms ease;
+  touch-action: pan-y;
+  user-select: none;
 }
 
 .proof-card.is-switching {
@@ -1754,8 +1756,16 @@
 
 @media (max-width: 620px) {
   .home-hero {
-    min-height: 760px;
+    min-height: 680px;
     padding-top: 120px;
+  }
+
+  .hero-content h1 {
+    font-size: 42px;
+  }
+
+  .hero-content p {
+    font-size: 17px;
   }
 
   .hero-actions {
@@ -1765,17 +1775,69 @@
 
   .trust-inner {
     grid-template-columns: 1fr;
-    padding: 20px;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 18px;
   }
 
   .metric {
-    min-height: 96px;
-    padding: 22px;
+    min-height: 74px;
+    padding: 16px 18px;
+  }
+
+  .metric strong {
+    font-size: 24px;
+  }
+
+  .metric span {
+    font-size: 13px;
+  }
+
+  .metric span + span {
+    padding-left: 16px;
   }
 
   .trust-copy,
   .rating p {
-    font-size: 16px;
+    font-size: 13px;
+  }
+
+  .trust-copy {
+    font-weight: 800;
+    line-height: 1.38;
+  }
+
+  .rating {
+    gap: 12px;
+  }
+
+  .brand-logo,
+  .goodfirms-logo,
+  .clutch-logo {
+    width: 48px;
+    height: 48px;
+  }
+
+  .rating strong {
+    gap: 6px;
+    margin-top: 3px;
+    font-size: 14px;
+  }
+
+  .rating small {
+    margin-top: 4px;
+    font-size: 12px;
+  }
+
+  .stars {
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+
+  .trustpilot-mark {
+    justify-self: center;
+    width: 48px;
+    height: 48px;
   }
 
   .service-feature-card {
@@ -1794,6 +1856,7 @@
 
   .services-action {
     padding: 20px;
+    border-radius: 18px;
   }
 
   .services-action-copy span {
@@ -1920,16 +1983,28 @@
   }
 
   .story-metrics {
-    display: grid;
-    gap: 22px;
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    width: min(100%, 340px);
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .story-metrics div {
+    flex: 0 1 auto;
+    gap: 10px;
+    min-width: 0;
   }
 
   .story-metrics strong {
-    font-size: 52px;
+    font-size: 34px;
   }
 
   .story-metrics span {
-    font-size: 18px;
+    font-size: 13px;
+    line-height: 1.15;
   }
 
   .approach-section {
@@ -1937,15 +2012,48 @@
   }
 
   .approach-tabs {
-    grid-template-columns: 1fr;
-    margin-top: 46px;
+    display: flex;
+    gap: 10px;
+    width: calc(100% - 28px);
+    margin-top: 36px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 14px 10px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+  }
+
+  .approach-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .approach-tab {
-    min-height: 74px;
+    flex: 0 0 158px;
+    min-height: 50px;
+    gap: 9px;
+    padding: 10px 12px;
+    border-radius: 999px;
+    scroll-snap-align: start;
+  }
+
+  .approach-tab:hover {
+    transform: none;
+  }
+
+  .approach-tab svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .approach-tab h3 {
+    font-size: 12px;
+    line-height: 1.15;
   }
 
   .approach-panel {
+    margin-top: 12px;
     padding: 22px;
     border-radius: 20px;
   }
@@ -1969,7 +2077,7 @@
   }
 
   .integrations-board {
-    min-height: 560px;
+    min-height: 500px;
     border-radius: 22px;
   }
 
@@ -1988,17 +2096,48 @@
   }
 
   .integrations-copy h2 {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
     font-size: 38px;
   }
 
   .integrations-copy p {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
     font-size: 17px;
+  }
+
+  .integrations-copy {
+    text-align: center;
+  }
+
+  .integrations-copy .section-kicker {
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .integration-points {
     grid-template-columns: 1fr;
     gap: 28px;
     margin: 46px 0 38px;
+  }
+
+  .integration-points div {
+    justify-items: center;
+  }
+
+  .integration-points h3 {
+    max-width: 300px;
+    text-align: center;
+    font-size: 20px;
+  }
+
+  .integrations-copy .btn {
+    width: min(100%, 280px);
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .proof-section {
@@ -2013,6 +2152,7 @@
   .proof-card {
     grid-template-columns: 1fr;
     padding: 28px;
+    min-height: 0;
   }
 
   .proof-bubble {
@@ -2046,12 +2186,44 @@
     min-width: 92px;
   }
 
+  .pricing-grid {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    max-width: none;
+    margin-top: 38px;
+    padding: 0 18px 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 18px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .pricing-grid::-webkit-scrollbar {
+    display: none;
+  }
+
   .price-card {
+    flex: 0 0 min(84vw, 340px);
+    scroll-snap-align: center;
     padding: 28px 22px;
   }
 
   .price strong {
-    font-size: 50px;
+    font-size: 44px;
+  }
+
+  .price {
+    margin: 26px 0 20px;
+  }
+
+  .price-card ul {
+    gap: 8px;
+  }
+
+  .price-card li {
+    font-size: 12px;
   }
 
   .final-cta-section {

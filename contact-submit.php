@@ -5,8 +5,8 @@ function read_site_config_value($key, $fallback) {
         return $fallback;
     }
     $contents = file_get_contents($path);
-    if (preg_match('/' . preg_quote($key, '/') . '\s*:\s*"([^"]+)"/', $contents, $matches)) {
-        return $matches[1];
+    if (preg_match('/' . preg_quote($key, '/') . '\s*:\s*([\'"])(.*?)\1/', $contents, $matches)) {
+        return $matches[2];
     }
     return $fallback;
 }

@@ -11,13 +11,55 @@
     if (config[key]) node.setAttribute("href", key === "email" ? `mailto:${config[key]}` : config[key]);
   });
 
+  const params = new URLSearchParams(window.location.search);
+  const contactForm = document.querySelector('form[action="contact-submit.php"]');
+  if (contactForm && params.get("sent") === "1") {
+    const status = document.createElement("p");
+    status.className = "form-status is-success";
+    status.setAttribute("role", "status");
+    status.textContent = "Thank you. Your message has been sent successfully.";
+    contactForm.prepend(status);
+  }
+
   const navToggle = document.querySelector("[data-nav-toggle]");
   const nav = document.querySelector("[data-nav]");
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+  const servicePages = new Set([
+    "services.html",
+    "strategy-consulting.html",
+    "performance-marketing.html",
+    "creative-systems.html",
+    "marketing-operations.html",
+    "conversion-intelligence.html"
+  ]);
+
+  document.querySelectorAll(".nav a[href]").forEach((link) => {
+    const href = link.getAttribute("href");
+    const isActive = href === currentPage;
+    link.classList.toggle("is-active", isActive);
+    if (isActive) link.setAttribute("aria-current", "page");
+  });
+
+  if (servicePages.has(currentPage)) {
+    document.querySelectorAll("[data-services-toggle]").forEach((toggle) => {
+      toggle.classList.add("is-active");
+      toggle.setAttribute("aria-current", "page");
+    });
+  }
+
   if (navToggle && nav) {
     navToggle.addEventListener("click", () => {
       const isOpen = nav.classList.toggle("is-open");
       navToggle.setAttribute("aria-expanded", String(isOpen));
       document.documentElement.classList.toggle("nav-open", isOpen);
+
+      if (!isOpen) {
+        document.querySelectorAll(".nav-dropdown.is-open").forEach((dropdown) => {
+          dropdown.classList.remove("is-open");
+          const toggle = dropdown.querySelector("[data-services-toggle]");
+          if (toggle) toggle.setAttribute("aria-expanded", "false");
+        });
+      }
     });
   }
 
@@ -35,13 +77,22 @@
   });
 
   const cookieBanner = document.querySelector("[data-cookie]");
-  const cookieButton = document.querySelector("[data-cookie-accept]");
-  if (cookieBanner && cookieButton && localStorage.getItem("hc-cookie-ok") !== "1") {
+  const cookieButtons = document.querySelectorAll("[data-cookie-accept], [data-cookie-decline]");
+  const savedCookieChoice = localStorage.getItem("hc-cookie-choice");
+  if (cookieBanner && cookieButtons.length && !savedCookieChoice) {
     cookieBanner.hidden = false;
-    cookieButton.addEventListener("click", () => {
-      localStorage.setItem("hc-cookie-ok", "1");
-      cookieBanner.hidden = true;
+
+    cookieButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const choice = button.hasAttribute("data-cookie-accept") ? "accepted" : "declined";
+        localStorage.setItem("hc-cookie-choice", choice);
+        localStorage.setItem("hc-cookie-ok", "1");
+        cookieBanner.hidden = true;
+      });
     });
+  } else if (cookieBanner && localStorage.getItem("hc-cookie-ok") === "1" && !savedCookieChoice) {
+    localStorage.setItem("hc-cookie-choice", "accepted");
+    cookieBanner.hidden = true;
   }
 
   const approachContent = {
@@ -212,6 +263,8 @@
   const proofPrev = document.querySelector("[data-proof-prev]");
   const proofNext = document.querySelector("[data-proof-next]");
   let proofIndex = 0;
+  let proofSwipeStartX = 0;
+  let proofSwipeStartY = 0;
 
   function renderProof(nextIndex) {
     if (!proofCard || !proofText || !proofName || !proofRole) return;
@@ -227,9 +280,24 @@
     }, 130);
   }
 
-  if (proofCard && proofPrev && proofNext) {
-    proofPrev.addEventListener("click", () => renderProof(proofIndex - 1));
-    proofNext.addEventListener("click", () => renderProof(proofIndex + 1));
+  if (proofCard) {
+    if (proofPrev) proofPrev.addEventListener("click", () => renderProof(proofIndex - 1));
+    if (proofNext) proofNext.addEventListener("click", () => renderProof(proofIndex + 1));
+
+    proofCard.addEventListener("touchstart", (event) => {
+      const touch = event.touches[0];
+      proofSwipeStartX = touch.clientX;
+      proofSwipeStartY = touch.clientY;
+    }, { passive: true });
+
+    proofCard.addEventListener("touchend", (event) => {
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - proofSwipeStartX;
+      const deltaY = touch.clientY - proofSwipeStartY;
+
+      if (Math.abs(deltaX) < 45 || Math.abs(deltaX) < Math.abs(deltaY) * 1.25) return;
+      renderProof(deltaX < 0 ? proofIndex + 1 : proofIndex - 1);
+    }, { passive: true });
   }
 
   const faqDetails = document.querySelectorAll(".faq-list details");
